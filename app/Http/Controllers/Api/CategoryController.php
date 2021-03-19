@@ -8,6 +8,12 @@ use Illuminate\Http\Request;
 
 class CategoryController extends Controller
 {
+
+    private static $validations = [
+        'name'=> 'required|max:255',
+        'is_active' => 'boolean'
+    ];
+
     /**
      * Display a listing of the resource.
      *
@@ -26,11 +32,7 @@ class CategoryController extends Controller
      */
     public function store(Request $request)
     {
-        $this->validate($request, [
-            'name'=> 'required|max:255',
-            'is_active' => 'boolean'
-        ]);
-
+        $this->validate($request, CategoryController::$validations);
         return Category::create($request->all());
     }
 
@@ -46,17 +48,6 @@ class CategoryController extends Controller
     }
 
     /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Category  $category
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Category $category)
-    {
-        //
-    }
-
-    /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -65,7 +56,9 @@ class CategoryController extends Controller
      */
     public function update(Request $request, Category $category)
     {
-        //
+        $this->validate($request, CategoryController::$validations);
+        $category->update($request->all());
+        return $category;
     }
 
     /**
@@ -76,6 +69,7 @@ class CategoryController extends Controller
      */
     public function destroy(Category $category)
     {
-        //
+        $category->delete();
+        return response()->noContent();
     }
 }
